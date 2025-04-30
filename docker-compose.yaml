@@ -1,0 +1,31 @@
+services:
+  keycloakdb:
+    image: mysql:latest
+    container_name: keycloak_db_container
+    env_file:
+      - ./keycloak/mysql.env
+    ports:
+      - "3007:3306"
+    volumes:
+      - ./keycloak/data:/var/lib/mysql
+  keycloak:
+    image: quay.io/keycloak/keycloak:latest
+    container_name: keycloak_container
+    env_file:
+      - ./keycloak/keycloak.env
+    ports:
+      - "8000:8000"
+    depends_on:
+      - keycloakdb
+    command: start-dev
+  frontend:
+    build:
+      context: ./salon-frontend
+      dockerfile: Dockerfile
+    container_name: salon-frontend
+    volumes:
+      - ./salon-frontend:/app
+    ports:
+      - "3000:3000"
+    depends_on:
+      - keycloak
