@@ -1,0 +1,27 @@
+{"properties": [
+  {
+    "name": "keycloak.realm",
+    "type": "java.lang.String",
+    "description": "A description for 'keycloak.realm'"
+  },
+  {
+    "name": "keycloak.credentials.secret",
+    "type": "java.lang.String",
+    "description": "A description for 'keycloak.credentials.secret'"
+  },
+  {
+    "name": "keycloak.clientId",
+    "type": "java.lang.String",
+    "description": "A description for 'keycloak.clientId'"
+  },
+  {
+    "name": "keycloak.server-url",
+    "type": "java.lang.String",
+    "description": "A description for 'keycloak.server-url'"
+  },
+  {
+    "name": "openid.connect.url",
+    "type": "java.lang.String",
+    "description": "A description for 'openid.connect.url'"
+  }
+]}

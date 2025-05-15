@@ -1,0 +1,41 @@
+spring:
+  application:
+    name: eureka-server
+
+
+server:
+  port: ${SERVER_PORT:8761} # Default Eureka port, override with SERVER_PORT env var
+
+eureka:
+  user:
+    name: ${EUREKA_USERNAME:username} # Override with EUREKA_USERNAME env var
+    password: ${EUREKA_PASSWORD:password} # Override with EUREKA_PASSWORD env var
+  client:
+    register-with-eureka: ${REGISTER_WITH_EUREKA:false} # Standalone server, does not register itself in development so keep it false, only true for multiple instance
+    fetch-registry: ${FETCH_REGISTRY:false} # Does not fetch registry in standalone mode for false, for multiple instance keep it true
+    service-url:
+      defaultZone: ${EUREKA_DEFAULT_ZONE}
+  instance:
+    hostname: ${EUREKA_HOSTNAME:localhost} # Default to localhost, override with EUREKA_HOSTNAME
+    prefer-ip-address: false # Use hostname for simplicity in dev
+    instance-id: ${spring.application.name}-${server.port}
+  server:
+    enable-self-preservation: false # Disabled for faster testing
+    eviction-interval-timer-in-ms: 30000 # Faster eviction (30s)
+    peer-node-read-timeout-ms: 1000
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics # Expose Actuator endpoints
+  endpoint:
+    health:
+      show-details: always
+  server:
+    port: ${MANAGEMENT_SERVER_PORT:8999}
+
+
+logging:
+  level:
+    '[com.netflix.*]': DEBUG # Detailed logging for troubleshooting

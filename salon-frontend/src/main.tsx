@@ -6,9 +6,10 @@ import { ThemeProvider } from "@mui/material";
 import theme from "./theme.ts";
 import { BrowserRouter } from "react-router-dom";
 import AuthProvider from "./context/AuthContextProvider.tsx";
+import { StrictMode } from "react";
 
 createRoot(document.getElementById("root")!).render(
-  // <StrictMode>
+  <StrictMode>
   <ThemeProvider theme={theme}>
     <BrowserRouter>
       <AuthProvider>
@@ -16,5 +17,5 @@ createRoot(document.getElementById("root")!).render(
       </AuthProvider>
     </BrowserRouter>
   </ThemeProvider>
-  // </StrictMode>
+</StrictMode>
 );

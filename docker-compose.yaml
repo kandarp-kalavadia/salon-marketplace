@@ -1,23 +1,101 @@
 services:
-  keycloakdb:
-    image: mysql:latest
-    container_name: keycloak_db_container
+  rabbitmq:
+    image: rabbitmq:4.1.0
+    container_name: rabbitmq
+    ports:
+      - "5672:5672" # AMQP port
+      - "15672:15672" # Management UI port
     env_file:
-      - ./keycloak/mysql.env
+      - ./environment/rabitmq.env
+    volumes:
+      - ./databases/rabbitmq_data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmqctl", "status"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+  keycloakdb:
+    image: mysql:9.3.0
+    container_name: keycloakdb_container
+    env_file:
+      - ./environment/keycloakdb.env
     ports:
       - "3007:3306"
     volumes:
-      - ./keycloak/data:/var/lib/mysql
+      - ./databases/keycloakdb_data:/var/lib/mysql
   keycloak:
-    image: quay.io/keycloak/keycloak:latest
+    image: quay.io/keycloak/keycloak:26.2
     container_name: keycloak_container
     env_file:
-      - ./keycloak/keycloak.env
+      - ./environment/keycloak.env
     ports:
       - "8000:8000"
     depends_on:
       - keycloakdb
     command: start-dev
+  salonservicedb:
+    image: mysql:9.3.0
+    container_name: salonservicedb_container
+    env_file:
+      - ./environment/salonservicedb.env
+    ports:
+      - "3008:3306"
+    volumes:
+      - ./databases/salonservicedb_data:/var/lib/mysql
+  categoryservicedb:
+    image: mysql:9.3.0
+    container_name: categoryservicedb_container
+    env_file:
+      - ./environment/categoryservicedb.env
+    ports:
+      - "3009:3306"
+    volumes:
+      - ./databases/categoryservicedb_data:/var/lib/mysql
+  serviceofferingservicedb:
+    image: mysql:9.3.0
+    container_name: serviceofferingservicedb_container
+    env_file:
+      - ./environment/serviceofferingservicedb.env
+    ports:
+      - "3010:3306"
+    volumes:
+      - ./databases/serviceofferingservicedb_data:/var/lib/mysql
+  reviewservicedb:
+    image: mysql:9.3.0
+    container_name: reviewservicedb_container
+    env_file:
+      - ./environment/reviewservicedb.env
+    ports:
+      - "3011:3306"
+    volumes:
+      - ./databases/reviewservicedb_data:/var/lib/mysql
+  bookingservicedb:
+    image: mysql:9.3.0
+    container_name: bookingservicedb_container
+    env_file:
+      - ./environment/bookingservicedb.env
+    ports:
+      - "3012:3306"
+    volumes:
+      - ./databases/bookingservicedb_data:/var/lib/mysql
+  paymentservicedb:
+    image: mysql:9.3.0
+    container_name: paymentservicedb_container
+    env_file:
+      - ./environment/paymentservicedb.env
+    ports:
+      - "3014:3306"
+    volumes:
+      - ./databases/paymentservicedb_data:/var/lib/mysql
+  notificationservicedb:
+    image: mysql:9.3.0
+    container_name: notificationservicedb_container
+    env_file:
+      - ./environment/notificationservicedb.env
+    ports:
+      - "3015:3306"
+    volumes:
+      - ./databases/notificationservicedb_data:/var/lib/mysql
   frontend:
     build:
       context: ./salon-frontend
@@ -25,7 +103,9 @@ services:
     container_name: salon-frontend
     volumes:
       - ./salon-frontend:/app
+      - /app/node_modules
     ports:
       - "3000:3000"
     depends_on:
       - keycloak
+

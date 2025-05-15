@@ -1,0 +1,17 @@
+{"properties": [
+  {
+    "name": "salon.image.upload.dir",
+    "type": "java.lang.String",
+    "description": "A description for 'salon.image.upload.dir'"
+  },
+  {
+    "name": "salon.image.url-prefix",
+    "type": "java.lang.String",
+    "description": "A description for 'salon.image.url-prefix'"
+  },
+  {
+    "name": "openid.connect.url",
+    "type": "java.lang.String",
+    "description": "A description for 'openid.connect.url'"
+  }
+]}

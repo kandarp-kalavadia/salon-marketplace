@@ -1,0 +1,17 @@
+{"properties": [
+  {
+    "name": "salon.service-offering.image.url-prefix",
+    "type": "java.lang.String",
+    "description": "A description for 'salon.service-offering.image.url-prefix'"
+  },
+  {
+    "name": "salon.service-offering.image.upload-dir",
+    "type": "java.lang.String",
+    "description": "A description for 'salon.service-offering.image.upload-dir'"
+  },
+  {
+    "name": "openid.connect.url",
+    "type": "java.lang.String",
+    "description": "A description for 'openid.connect.url'"
+  }
+]}

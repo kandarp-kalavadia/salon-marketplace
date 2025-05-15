@@ -12,9 +12,11 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
-  console.log("AuthProvider  called");
+  console.log("AuthProvider called");
 
   useEffect(() => {
+    console.log("Use Effect AuthProvider called");
+
     userManager
       .getUser()
       .then((oidcUser) => {
