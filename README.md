@@ -10,7 +10,7 @@
    salonservicedb_data  
    serviceofferingservicedb_data**
 
-=> Create  **grafna** folder and inside it create  folder\n
+=> Create  **grafana** folder and inside it create  folder\n
     **data** 
 
 => create **data** folder inside **tempo** folder
