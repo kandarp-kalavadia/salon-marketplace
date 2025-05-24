@@ -3,6 +3,7 @@ package com.kandarp.salon.config;
 import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
@@ -25,7 +26,12 @@ public class SecurityConfig {
 	SecurityFilterChain apiSecurityFilterChain(HttpSecurity http) throws Exception {
 
 		http.authorizeHttpRequests(customizer -> {
-			customizer.requestMatchers("/api/v1/salons/signup","/api/v1/salons/images/**","/salon-service-doc/**").permitAll();
+			customizer.requestMatchers("/salon-service-doc/**").permitAll();
+			
+			customizer.requestMatchers("/api/v1/salons/signup","/api/v1/salons/images/**").permitAll();
+			
+			customizer.requestMatchers(HttpMethod.GET,"/api/v1/salons/**").permitAll();
+
 			customizer.requestMatchers(EndpointRequest.toAnyEndpoint()).permitAll();
 			customizer.anyRequest().authenticated();
 		});

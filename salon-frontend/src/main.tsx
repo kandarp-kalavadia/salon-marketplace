@@ -1,21 +1,23 @@
-// import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
+import { Provider } from "react-redux";
+import { ThemeProvider } from "@mui/material/styles";
+import CssBaseline from "@mui/material/CssBaseline";
+import App from "./App";
+import { store } from "./store/store";
+import { theme } from "./theme/theme";
+import ErrorBoundary from "./components/ErrorBoundary";
 import "./index.css";
-import App from "./App.tsx";
-import { ThemeProvider } from "@mui/material";
-import theme from "./theme.ts";
-import { BrowserRouter } from "react-router-dom";
-import AuthProvider from "./context/AuthContextProvider.tsx";
-import { StrictMode } from "react";
+import { AuthProvider } from "./auth/AuthContext";
 
 createRoot(document.getElementById("root")!).render(
-  <StrictMode>
-  <ThemeProvider theme={theme}>
-    <BrowserRouter>
+  <ErrorBoundary>
+    <Provider store={store}>
       <AuthProvider>
-        <App />
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          <App />
+        </ThemeProvider>
       </AuthProvider>
-    </BrowserRouter>
-  </ThemeProvider>
-</StrictMode>
+    </Provider>
+  </ErrorBoundary>
 );

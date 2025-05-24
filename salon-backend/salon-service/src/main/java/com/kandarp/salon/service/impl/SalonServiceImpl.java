@@ -10,6 +10,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -22,7 +24,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.kandarp.salon.entity.Salon;
+import com.kandarp.salon.entity.SalonDocument;
 import com.kandarp.salon.mapper.SalonMapper;
+import com.kandarp.salon.repository.SalonDocumentRepository;
 import com.kandarp.salon.repository.SalonRepository;
 import com.kandarp.salon.service.SalonService;
 import com.kandarp.salon.service.client.UserServiceClient;
@@ -30,6 +34,7 @@ import com.kandarp.salon.shared.salon.dto.SalonCreationDto;
 import com.kandarp.salon.shared.salon.dto.SalonRequestDto;
 import com.kandarp.salon.shared.salon.dto.SalonResponseDto;
 import com.kandarp.salon.shared.user.dto.UserCreationDto;
+import com.kandarp.salon.shared.user.dto.UserCreationResponseDto;
 import com.kandarp.salon.shared.user.dto.UserDto;
 
 import lombok.RequiredArgsConstructor;
@@ -37,8 +42,12 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class SalonServiceImpl implements SalonService {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(SalonServiceImpl.class);
 
 	private final SalonRepository salonRepository;
+	private final SalonDocumentRepository salonDocumentRepository;
+
 	private final UserServiceClient userServiceClient;
 	private final SalonMapper salonMapper;
 
@@ -53,17 +62,25 @@ public class SalonServiceImpl implements SalonService {
 	public SalonResponseDto createSalon(SalonCreationDto salonCreationDto, MultipartFile[] images) {
 		// Create salon owner user
 		UserCreationDto userCreationDto = salonCreationDto.getUser();
-		ResponseEntity<String> userResponse = userServiceClient.createSalonOwnerUser(userCreationDto);
-		String userId = userResponse.getBody();
+		ResponseEntity<UserCreationResponseDto> userResponse = userServiceClient.createSalonOwnerUser(userCreationDto);
+		String userId = userResponse.getBody().getUserId();
+		
+		LOGGER.info("User Created.");
 
 		// Upload images
 		List<String> salonImages = uploadSalonImages(images);
+		
+		LOGGER.info("Images Uploaded");
+
 
 		// Create salon
 		Salon salon = salonMapper.toEntity(salonCreationDto);
 		salon.setOwnerId(userId);
 		salon.setSalonImages(salonImages);
 		Salon saved = salonRepository.save(salon);
+		
+		LOGGER.info("Salon Created.");
+
 
 		UserDto userDto = new UserDto(userId, userCreationDto.getFirstName(), userCreationDto.getLastName(),
 				userCreationDto.getUserName(), userCreationDto.getEmail(), userCreationDto.getGender());
@@ -118,7 +135,22 @@ public class SalonServiceImpl implements SalonService {
 	@Override
 	public List<SalonResponseDto> getAllSalons() {
 		List<Salon> salons = salonRepository.findAll();
+		LOGGER.info("All Salon Fetched");
+
 		return salons.stream().map(salon -> {
+			ResponseEntity<UserDto> userDtoResponse = userServiceClient.getUserByUserId(salon.getOwnerId());
+			SalonResponseDto dto = salonMapper.toDto(salon, imageUrlPrefix);
+			dto.setUser(userDtoResponse.getBody());
+			return dto;
+		}).collect(Collectors.toList());
+	}
+	
+	@Override
+	public List<SalonResponseDto> searchSalons(String query) {
+		 List<SalonDocument> salonDocuments = salonDocumentRepository.findBySalonNameOrCityOrServiceNamesContainingIgnoreCase(query,query,query);
+
+		return salonDocuments.stream().map(salonDoc -> {
+			Salon salon = salonRepository.findById(salonDoc.getSalonId()).orElseThrow();
 			ResponseEntity<UserDto> userDtoResponse = userServiceClient.getUserByUserId(salon.getOwnerId());
 			SalonResponseDto dto = salonMapper.toDto(salon, imageUrlPrefix);
 			dto.setUser(userDtoResponse.getBody());

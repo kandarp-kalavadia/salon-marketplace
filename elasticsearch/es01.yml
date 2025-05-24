@@ -1,0 +1,27 @@
+cluster:
+  name: my-elasticsearch-cluster
+  initial_master_nodes:
+    - es01
+node:
+  name: es01
+  roles:
+    - master
+    - data
+network:
+  host: 0.0.0.0
+http:
+  port: 9200
+discovery:
+  seed_hosts:
+    - es02
+bootstrap:
+  memory_lock: true
+xpack:
+  security:
+    enabled: false
+    http:
+      ssl:
+        enabled: false
+    transport:
+      ssl:
+        enabled: false

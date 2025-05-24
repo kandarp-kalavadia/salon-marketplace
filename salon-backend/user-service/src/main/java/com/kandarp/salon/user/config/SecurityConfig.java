@@ -3,6 +3,7 @@ package com.kandarp.salon.user.config;
 import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -29,6 +30,10 @@ public class SecurityConfig {
 
 		http.authorizeHttpRequests(customizer -> {
 			customizer.requestMatchers("/api/v1/users/signup","/api/v1/users/salon/signup","/user-service-doc/**").permitAll();
+			
+			customizer.requestMatchers(HttpMethod.GET,"/api/v1/users/**").permitAll();
+
+			
 			customizer.requestMatchers(EndpointRequest.toAnyEndpoint()).permitAll();
 			customizer.anyRequest().authenticated();
 		});

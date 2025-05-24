@@ -28,6 +28,8 @@ spring:
             loggerLevel: basic
       circuitbreaker:
         enabled: false
+  elasticsearch:
+    uris: ${ELASTICSEARCH_URL:http://localhost:9200}
           
 resilience4j:
   circuitbreaker:
@@ -74,15 +76,35 @@ eureka:
 
 
 management:
+  health:
+    circuitbreakers:
+      enabled: true
   endpoints:
     web:
       exposure:
-        include: health,info,metrics # Expose Actuator endpoints
+        include: health,info,metrics,circuitbreakers,circuitbreakerevents,prometheus # Expose Actuator endpoints
   endpoint:
     health:
       show-details: always
+    prometheus:
+      access: unrestricted
   server:
     port: ${MANAGEMENT_SERVER_PORT:9004}
+  prometheus:
+    metrics:
+      export:
+        enabled: true
+  metrics:
+    tags:
+      application: ${spring.application.name}
+      instance: ${INSTANCE_ID:default-instance}
+  tracing:
+    enabled: true
+    sampling:
+      probability: 1.0
+  otlp:
+    tracing:
+      endpoint: ${OTLP_TRACING_ENDPOINT:http://localhost:4318/v1/traces}
 
 salon:
   service-offering:

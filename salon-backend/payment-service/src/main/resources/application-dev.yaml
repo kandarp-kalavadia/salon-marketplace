@@ -18,59 +18,12 @@ spring:
       resourceserver:
         jwt:
           issuer-uri: ${ISSUER_URI:http://localhost:8000/realms/realm-name}
-  cloud:
-    openfeign:
-      client:
-        config:
-          default:
-            connectTimeout: 1000
-            readTimeout: 1000
-            loggerLevel: basic
-      circuitbreaker:
-        enabled: false
   rabbitmq:
     host: ${RABBITMQ_HOST:localhost}
     port: ${RABBITMQ_PORT:5672}
     username: ${RABBITMQ_USERNAME:guest}
     password: ${RABBITMQ_PASSWORD:guest}
           
-resilience4j:
-  circuitbreaker:
-    configs:
-      default:
-        slidingWindowSize: 5
-        slidingWindowType: COUNT_BASED
-        failureRateThreshold: 50
-        waitDurationInOpenState: 60000
-        permittedNumberOfCallsInHalfOpenState: 2
-        automaticTransitionFromOpenToHalfOpenEnabled: true
-        registerHealthIndicator: true
-    instances:
-      UserServiceCall:
-        baseConfig: default
-      SalonServiceCall:
-        baseConfig: default
-      PaymentServiceCall:
-        baseConfig: default
-      ServiceOfferingServiceCall:
-        baseConfig: default
-    circuit-breaker-aspect-order: 1
-  retry:
-    configs:
-      default:
-        maxAttempts: 2
-        waitDuration: 5000
-    instances:
-      UserServiceCall:
-        baseConfig: default
-      SalonServiceCall:
-        baseConfig: default
-      PaymentServiceCall:
-        baseConfig: default
-      ServiceOfferingServiceCall:
-        baseConfig: default
-    retry-aspect-order: 2 
-
 server:
   port: ${SERVER_PORT:8087} #  override with SERVER_PORT env var
   forward-headers-strategy: framework
@@ -87,18 +40,39 @@ eureka:
 
 
 management:
-  health:
-    circuitbreakers:
-      enabled: true
   endpoints:
     web:
       exposure:
-        include: health,info,metrics,circuitbreakers,circuitbreakerevents # Expose Actuator endpoints
+        include: health,info,metrics,prometheus # Expose Actuator endpoints
   endpoint:
     health:
       show-details: always
+    prometheus:
+      access: unrestricted
   server:
     port: ${MANAGEMENT_SERVER_PORT:9007}
+  prometheus:
+    metrics:
+      export:
+        enabled: true
+  metrics:
+    tags:
+      application: ${spring.application.name}
+      instance: ${INSTANCE_ID:default-instance}
+  tracing:
+    enabled: true
+    sampling:
+      probability: 1.0
+  otlp:
+    tracing:
+      endpoint: ${OTLP_TRACING_ENDPOINT:http://localhost:4318/v1/traces}
+
+logging:
+  level:
+    '[org.springframework.security]': DEBUG
+    '[org.springframework.web]': DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd'T'HH:mm:ss.SSSXXX} %-5level --- [%thread] %logger{36} : [traceId=%X{traceId:-}, spanId=%X{spanId:-}] %msg%n"
 
 
 springdoc:

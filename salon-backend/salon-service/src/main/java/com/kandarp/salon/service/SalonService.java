@@ -29,4 +29,6 @@ public interface SalonService {
 
 	Path resolveUploadPath();
 
+	List<SalonResponseDto> searchSalons(String query);
+
 }

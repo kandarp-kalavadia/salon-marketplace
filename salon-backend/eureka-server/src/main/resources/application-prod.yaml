@@ -23,6 +23,7 @@ eureka:
       # Example: https://eureka1.example.com:8761/eureka/,https://eureka2.example.com:8762/eureka/
   instance:
     hostname: ${EUREKA_HOSTNAME:eureka-server.example.com} # Override with EUREKA_HOSTNAME
+    appname: eureka-cluster
     prefer-ip-address: true # Use IP in dynamic environments (Docker/K8s)
     lease-renewal-interval-in-seconds: 30 # Heartbeat interval
     lease-expiration-duration-in-seconds: 90 # Time before instance is removed
@@ -36,12 +37,22 @@ management:
   endpoints:
     web:
       exposure:
-        include: health,info,metrics # Expose Actuator endpoints
+        include: health,info,metrics,prometheus # Expose Actuator endpoints
   endpoint:
     health:
       show-details: always
+    prometheus:
+      access: unrestricted
   server:
     port: ${MANAGEMENT_SERVER_PORT:8999}
+  prometheus:
+    metrics:
+      export:
+        enabled: true
+  metrics:
+    tags:
+      application: ${spring.application.name}
+      instance: ${INSTANCE_ID:default-instance}
 
 logging:
   level:

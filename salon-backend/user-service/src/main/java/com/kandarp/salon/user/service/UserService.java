@@ -71,6 +71,8 @@ public class UserService {
 			RealmResource realmResource = keycloak.realm(keycloakProperties.getRealm());
 			UsersResource usersResource = realmResource.users();
 			UserRepresentation userRepresentation = usersResource.get(userId).toRepresentation();
+			log.info("User fetched Successfully.");
+
 			return UserMapper.MAPPER.userRepresentationToUserDto(userRepresentation);
 		} catch (NotFoundException e) {
 			throw new NotFoundException("User Not Found: ", e);

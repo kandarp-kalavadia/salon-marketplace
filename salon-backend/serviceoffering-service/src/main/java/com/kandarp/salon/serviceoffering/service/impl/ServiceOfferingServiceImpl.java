@@ -6,6 +6,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -19,8 +20,10 @@ import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.kandarp.salon.serviceoffering.entity.SalonDocument;
 import com.kandarp.salon.serviceoffering.entity.ServiceOffering;
 import com.kandarp.salon.serviceoffering.mapper.ServiceOfferingMapper;
+import com.kandarp.salon.serviceoffering.repository.SalonDocumentRepository;
 import com.kandarp.salon.serviceoffering.repository.ServiceOfferingRepository;
 import com.kandarp.salon.serviceoffering.service.ServiceOfferingService;
 import com.kandarp.salon.serviceoffering.service.client.CategoryServiceClient;
@@ -40,6 +43,7 @@ public class ServiceOfferingServiceImpl implements ServiceOfferingService {
 	private final SalonServiceClient salonServiceClient;
 	private final CategoryServiceClient categoryServiceClient;
 	private final ServiceOfferingMapper mapper;
+	private final SalonDocumentRepository salonDocumentRepository;
 
 	@Value("${salon.service-offering.image.upload-dir}")
 	private String uploadDir;
@@ -52,7 +56,7 @@ public class ServiceOfferingServiceImpl implements ServiceOfferingService {
 			MultipartFile image) {
 
 		ResponseEntity<SalonResponseDto> salonDtoResponse = salonServiceClient.getSalonByOwnerId(ownerUserId);
-
+        SalonResponseDto salonResponseDto = salonDtoResponse.getBody();
 		ResponseEntity<CategoryResponseDto> categoryDtoResponse = categoryServiceClient.getCategoryById(dto.getCategoryId());
 
 		String imagePath = null;
@@ -61,11 +65,32 @@ public class ServiceOfferingServiceImpl implements ServiceOfferingService {
 		}
 
 		ServiceOffering serviceOffering = mapper.toEntity(dto);
-		serviceOffering.setSalonId(salonDtoResponse.getBody().getSalonId());
+		serviceOffering.setSalonId(salonResponseDto.getSalonId());
 		serviceOffering.setCategoryId(categoryDtoResponse.getBody().getId());
 		serviceOffering.setImage(imagePath);
 
 		ServiceOffering saved = repository.save(serviceOffering);
+		
+		
+		Optional<SalonDocument> salonDocumentOpt = salonDocumentRepository.findById(salonResponseDto.getSalonId());
+		SalonDocument salonDocument = null;
+
+		if(salonDocumentOpt.isPresent()) {
+		    salonDocument = salonDocumentOpt.get();
+			salonDocument.getServiceNames().add(saved.getName());
+		}else {
+			salonDocument = new SalonDocument();
+			salonDocument.setSalonName(salonResponseDto.getSalonName());
+			salonDocument.setAddress(salonResponseDto.getAddress());
+			salonDocument.setCity(salonResponseDto.getCity());
+			salonDocument.setLandmark(salonResponseDto.getLandmark());
+			salonDocument.setSalonId(salonResponseDto.getSalonId());
+			salonDocument.setServiceNames(List.of(saved.getName()));
+			salonDocument.setState(salonResponseDto.getState());
+			salonDocument.setZipcode(salonResponseDto.getZipcode());
+		}
+		salonDocumentRepository.save(salonDocument);
+
 		return mapper.toDto(saved, imageUrlPrefix);
 	}
 
@@ -76,6 +101,7 @@ public class ServiceOfferingServiceImpl implements ServiceOfferingService {
 		ServiceOffering entity = repository.findById(id).orElseThrow();
 
 		ResponseEntity<SalonResponseDto> salonDtoResponse = salonServiceClient.getSalonById(entity.getSalonId());
+        SalonResponseDto salonResponseDto = salonDtoResponse.getBody();
 
 		String salonOwnerUserId = salonDtoResponse.getBody().getUser().getUserId();
 		if (!salonOwnerUserId.equals(ownerUserId)) {
@@ -95,6 +121,26 @@ public class ServiceOfferingServiceImpl implements ServiceOfferingService {
 		}
 
 		ServiceOffering updated = repository.save(entity);
+		
+		Optional<SalonDocument> salonDocumentOpt = salonDocumentRepository.findById(salonResponseDto.getSalonId());
+		SalonDocument salonDocument = null;
+		
+		if(salonDocumentOpt.isPresent()) {
+		    salonDocument = salonDocumentOpt.get();
+			salonDocument.getServiceNames().add(updated.getName());
+		}else {
+			salonDocument = new SalonDocument();
+			salonDocument.setSalonName(salonResponseDto.getSalonName());
+			salonDocument.setAddress(salonResponseDto.getAddress());
+			salonDocument.setCity(salonResponseDto.getCity());
+			salonDocument.setLandmark(salonResponseDto.getLandmark());
+			salonDocument.setSalonId(salonResponseDto.getSalonId());
+			salonDocument.setServiceNames(List.of(updated.getName()));
+			salonDocument.setState(salonResponseDto.getState());
+			salonDocument.setZipcode(salonResponseDto.getZipcode());
+		}
+		salonDocumentRepository.save(salonDocument);
+		
 		return mapper.toDto(updated, imageUrlPrefix);
 	}
 

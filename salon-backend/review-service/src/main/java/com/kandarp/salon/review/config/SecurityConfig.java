@@ -3,6 +3,7 @@ package com.kandarp.salon.review.config;
 import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
@@ -26,6 +27,9 @@ public class SecurityConfig {
 
 		http.authorizeHttpRequests(customizer -> {
 			customizer.requestMatchers("/review-service-doc/**").permitAll();
+			
+			customizer.requestMatchers(HttpMethod.GET,"/api/v1/reviews/**").permitAll();
+			
 			customizer.requestMatchers(EndpointRequest.toAnyEndpoint()).permitAll();
 			customizer.anyRequest().authenticated();
 		});

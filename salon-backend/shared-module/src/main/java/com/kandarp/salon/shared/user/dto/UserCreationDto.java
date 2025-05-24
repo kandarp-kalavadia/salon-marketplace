@@ -29,8 +29,6 @@ public class UserCreationDto {
     private String lastName;
 
     @NotBlank(message = "Username is required.")
-    @Size(min = 4, max = 30, message = "Username must be 4 to 30 characters long.")
-    @Pattern(regexp = "^[a-zA-Z0-9_-]+$", message = "Username can only include letters, numbers, underscores, or hyphens.")
     private String userName;
 
     @NotBlank(message = "Email is required.")

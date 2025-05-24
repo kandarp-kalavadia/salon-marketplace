@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.kandarp.salon.shared.user.constant.UserRole;
 import com.kandarp.salon.shared.user.dto.UserCreationDto;
+import com.kandarp.salon.shared.user.dto.UserCreationResponseDto;
 import com.kandarp.salon.shared.user.dto.UserDto;
 import com.kandarp.salon.user.service.UserService;
 
@@ -26,20 +27,20 @@ public class UserController {
 
 	private final UserService userService;
 
-	@PostMapping("/signup")
-	public ResponseEntity<String> createCustomerUser(@Valid @RequestBody UserCreationDto userCreationDto) {
+	@PostMapping(value="/signup")
+	public ResponseEntity<UserCreationResponseDto> createCustomerUser(@Valid @RequestBody UserCreationDto userCreationDto) {
 		String userId = userService.createUser(userCreationDto.getFirstName(), userCreationDto.getLastName(),
 				userCreationDto.getUserName(), userCreationDto.getPassword(), userCreationDto.getEmail(),
 				UserRole.CUSTOMER.name(), userCreationDto.getGender().getValue());
-		return new ResponseEntity<String>(userId, HttpStatus.CREATED);
+		return new ResponseEntity<UserCreationResponseDto>(new UserCreationResponseDto(userId), HttpStatus.CREATED);
 	}
 	
 	@PostMapping("/salon/signup")
-	public ResponseEntity<String> createSalonOwnerUser(@Valid @RequestBody UserCreationDto userCreationDto) {
+	public ResponseEntity<UserCreationResponseDto> createSalonOwnerUser(@Valid @RequestBody UserCreationDto userCreationDto) {
 		String userId = userService.createUser(userCreationDto.getFirstName(), userCreationDto.getLastName(),
 				userCreationDto.getUserName(), userCreationDto.getPassword(), userCreationDto.getEmail(),
 				UserRole.SALON_OWNER.name(), userCreationDto.getGender().getValue());
-		return new ResponseEntity<String>(userId, HttpStatus.CREATED);
+		return new ResponseEntity<UserCreationResponseDto>(new UserCreationResponseDto(userId), HttpStatus.CREATED);
 	}
 	
 	@GetMapping("/{userId}")

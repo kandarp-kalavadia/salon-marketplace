@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -66,6 +67,11 @@ public class SalonController {
 		return ResponseEntity.ok(responseDto);
 	}
 	
+	@GetMapping("/searchs")
+	public ResponseEntity<List<SalonResponseDto>> searchSalons(@RequestParam String query) {
+		List<SalonResponseDto> responseDtos = salonService.searchSalons(query);
+		return ResponseEntity.ok(responseDtos);
+	}
 
 	@GetMapping("/owner/{ownerId}")
 	public ResponseEntity<SalonResponseDto> getSalonByOwnerId(@PathVariable String ownerId) {

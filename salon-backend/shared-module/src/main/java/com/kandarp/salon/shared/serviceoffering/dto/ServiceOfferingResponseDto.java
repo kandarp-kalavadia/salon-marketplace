@@ -17,7 +17,7 @@ public class ServiceOfferingResponseDto {
 	private String name;
 	private String description;
 	private BigDecimal price;
-	private Duration duration;
+	private long duration;
 	private Long salonId;
 	private Long categoryId;
 	private boolean available;

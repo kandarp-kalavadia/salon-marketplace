@@ -1,0 +1,43 @@
+global:
+  scrape_interval: 15s
+scrape_configs:
+  - job_name: 'eureka-server'
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: ['eurekaserver1:9000','eurekaserver2:9000']
+  - job_name: 'gateway-server'
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: ['gateway-server:9000']
+  - job_name: 'user-service'
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: ['user-service:9000']
+  - job_name: 'salon-service'
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: ['salon-service:9000']
+  - job_name: 'category-service'
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: ['category-service:9000']
+  - job_name: 'service-offering-service'
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: ['serviceoffering-service:9000']
+  - job_name: 'review-service'
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: ['review-service:9000']
+  - job_name: 'booking-service'
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: ['booking-service:9000']
+  - job_name: 'payment-service'
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: ['payment-service:9000']
+  - job_name: 'notification-service'
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: ['notification-service:9000']

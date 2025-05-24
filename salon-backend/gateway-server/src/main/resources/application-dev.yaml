@@ -59,17 +59,36 @@ management:
   endpoints:
     web:
       exposure:
-        include: health,info,metrics # Expose Actuator endpoints
+        include: health,info,metrics,prometheus # Expose Actuator endpoints
   endpoint:
     health:
       show-details: always
+    prometheus:
+      access: unrestricted
   server:
     port: ${MANAGEMENT_SERVER_PORT:9000}
+  prometheus:
+    metrics:
+      export:
+        enabled: true
+  metrics:
+    tags:
+      application: ${spring.application.name}
+      instance: ${INSTANCE_ID:default-instance}
+  tracing:
+    enabled: true
+    sampling:
+      probability: 1.0
+  otlp:
+    tracing:
+      endpoint: ${OTLP_TRACING_ENDPOINT:http://localhost:4318/v1/traces}
 
 logging:
   level:
-    '[org.springframework.security]': DEBUG
-    '[org.springframework.web]': DEBUG
+    '[logging.level.org.springframework.cloud.gateway]': DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd'T'HH:mm:ss.SSSXXX} %-5level --- [%thread] %logger{36} : [traceId=%X{traceId:-}, spanId=%X{spanId:-}] %msg%n"
+
 
 springdoc:
   swagger-ui:
@@ -92,3 +111,6 @@ springdoc:
         url: /notification-service-doc/v3/api-docs
     oauth:
       client-id: ${SWAGGER_CLIENT_ID:clientId}
+
+cors:
+  allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:5000}
