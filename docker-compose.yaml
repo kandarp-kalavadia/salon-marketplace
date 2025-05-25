@@ -169,12 +169,18 @@ services:
     volumes:
       - salon_images:/data/uploads/salon-images/
     depends_on:
-      - keycloak
-      - salonservicedb
-      - eurekaserver1
-      - eurekaserver2
-      - es01
-      - es02
+      keycloak:
+        condition: service_started
+      salonservicedb:
+        condition: service_started
+      eurekaserver1:
+        condition: service_started
+      eurekaserver2:
+        condition: service_started
+      es01:
+        condition: service_healthy
+      es02:
+        condition: service_healthy
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:9002/actuator/health"]
       interval: 30s
@@ -235,12 +241,18 @@ services:
     volumes:
       - service_images:/data/uploads/salon-serviceoffering-image/
     depends_on:
-      - keycloak
-      - serviceofferingservicedb
-      - eurekaserver1
-      - eurekaserver2
-      - es01
-      - es02
+      keycloak:
+        condition: service_started
+      serviceofferingservicedb:
+        condition: service_started
+      eurekaserver1:
+        condition: service_started
+      eurekaserver2:
+        condition: service_started
+      es01:
+        condition: service_healthy
+      es02:
+        condition: service_healthy
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:9000/actuator/health"]
       interval: 30s
@@ -379,6 +391,11 @@ services:
       - ./elasticsearch/es01.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
     ports:
       - 9200:9200
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9200/_cluster/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
   es02:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.18.1
     container_name: es02
@@ -391,6 +408,11 @@ services:
     volumes:
       - data02:/usr/share/elasticsearch/data
       - ./elasticsearch/es02.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9200/_cluster/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
   frontend:
     build:
       context: ./salon-frontend

@@ -18,6 +18,7 @@ public interface ServiceOfferingMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "salonId", ignore = true)
     @Mapping(target = "image", ignore = true)
+    @Mapping(source = "duration", target = "duration",qualifiedByName = "longToDuration")
     ServiceOffering toEntity(ServiceOfferingRequestDto dto);
 
     @Mapping(source = "image", target = "image", qualifiedByName = "prependImageUrlPrefix")
@@ -27,8 +28,14 @@ public interface ServiceOfferingMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "salonId", ignore = true)
     @Mapping(target = "image", ignore = true)
+    @Mapping(source = "duration", target = "duration",qualifiedByName = "longToDuration")
     void updateEntityFromDto(ServiceOfferingRequestDto dto, @MappingTarget ServiceOffering entity);
     
+    
+    @Named("longToDuration")
+    default Duration durationToLong(long duration) {
+        return Duration.ofMinutes(duration);
+    }
     
     @Named("durationToLong")
     default long durationToLong(Duration duration) {

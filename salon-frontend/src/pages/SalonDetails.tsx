@@ -36,6 +36,7 @@ import { useGetReviewsBySalonQuery } from '../store/api/reviewApi';
 import { addToCart } from '../store/slice/cartSlice';
 import { ServiceOfferingResponseDto } from '../types/api';
 import { useAuth } from '../auth/AuthContext';
+import ReviewModal from '../components/ReviewModal';
 
 const SalonDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -43,6 +44,7 @@ const SalonDetails: React.FC = () => {
   const dispatch = useDispatch();
   const { user,hasRole } = useAuth();
   const { items: cartItems, total } = useSelector((state: RootState) => state.cart);
+  const [openReviewModal, setOpenReviewModal] = useState(false);
   
   const salonId = parseInt(id || '0');
   
@@ -58,6 +60,10 @@ const SalonDetails: React.FC = () => {
     isExpanded: boolean
   ) => {
     setExpandedCategory(isExpanded ? categoryId : false);
+  };
+
+  const handleOpenReviewModal = () => {
+    setOpenReviewModal(true);
   };
 
   const handleAddToCart = (service: ServiceOfferingResponseDto) => {
@@ -352,9 +358,11 @@ const SalonDetails: React.FC = () => {
                       Customer Reviews
                     </Typography>
                     {hasRole('CUSTOMER') && (
+                     
                       <Button 
                         size="small" 
                         variant="outlined"
+                        onClick={handleOpenReviewModal}
                         sx={{ textTransform: 'none' }}
                       >
                         Write Review
@@ -390,6 +398,11 @@ const SalonDetails: React.FC = () => {
             </Box>
           </Grid>
         </Grid>
+        <ReviewModal
+        open={openReviewModal}
+        onClose={() => setOpenReviewModal(false)}
+        salonId={salonId}
+      />
       </Container>
     </Box>
   );

@@ -182,9 +182,25 @@ const Home: React.FC = () => {
           </Box>
 
           {/* Search Filters */}
-          <Paper elevation={2} sx={{ p: 3, borderRadius: 3, mb: 6 , textAlign:'center'}}>
-            <SearchBar initialSearchTerm={searchTerm} />
-          </Paper>
+          <Paper
+              elevation={2}
+              sx={{
+                p: 3,
+                borderRadius: 3,
+                mb: 6,
+                display: 'flex', // Use flexbox to center content
+                justifyContent: 'center', // Center horizontally
+                alignItems: 'center', // Center vertically (if needed)
+                width: '100%', // Ensure Paper takes full width
+                maxWidth: 600, // Optional: Limit width for better appearance
+                mx: 'auto', // Center Paper in parent container
+                // Ensure visibility on all screen sizes
+              }}
+            >
+              <Box sx={{ width: '100%', maxWidth: 500 }}>
+                <SearchBar initialSearchTerm={searchTerm} />
+              </Box>
+            </Paper>
           {/* Salons Grid */}
           {isLoading ? (
             <LoadingSpinner message="Finding salons for you..." />

@@ -38,11 +38,11 @@ const SearchBar: React.FC<SearchBarProps> = ({
         flexGrow: 1,
         maxWidth: 600,
         mx: 4,
-        display: { xs: 'none', md: 'block' },
+        display: { xs: 'block', md: 'block' },
       }}
     >
       <Grid container spacing={0} alignItems="center">
-        <Grid size={{ xs: 12, md: 10 }}>
+        <Grid size={{ xs: 8, md: 10 }}>
           <TextField
             fullWidth
             placeholder="Search salons, services..."
@@ -70,7 +70,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
               },
             }}
             onKeyUp={(e) => {
-              if (e.key === 'Enter' && searchTerm.trim()) {
+              if (searchTerm.trim()) {
                 handleSearch();
               }
             }}
@@ -80,7 +80,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
           <Button
             variant="contained"
             onClick={handleSearch}
-            sx={{ ml: 1, borderRadius: 3 }}
+            sx={{ ml: 1, borderRadius: 3,display: { xs: 'none', md: 'block' } }}
             disabled={!searchTerm.trim()}
           >
             Search

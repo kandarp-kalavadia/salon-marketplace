@@ -13,6 +13,12 @@ import {
   Menu,
   MenuItem,
   Chip,
+  Drawer,
+  List,
+  ListItem,
+  ListItemText,
+  Divider,
+  ListItemButton,
 } from '@mui/material';
 import {
   Search as SearchIcon,
@@ -43,6 +49,8 @@ const Navigation: React.FC = () => {
   const [signupModalOpen, setSignupModalOpen] = useState(false);
   const [salonSignupModalOpen, setSalonSignupModalOpen] = useState(false);
 
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false); // State for mobile menu
+
 
   const handleProfileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setProfileMenuAnchor(event.currentTarget);
@@ -65,6 +73,10 @@ const Navigation: React.FC = () => {
     dispatch(toggleNotifications());
   };
 
+  const handleMobileMenuToggle = () => {
+    setMobileMenuOpen(!mobileMenuOpen);
+  };
+
   const getUserInitials = (firstName: string | undefined, lastName: string | undefined) => {
     if(firstName && lastName){
       return `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase();
@@ -74,6 +86,36 @@ const Navigation: React.FC = () => {
   };
 
   const isCustomerOrGuest = !user || hasRole('CUSTOMER');
+
+
+  // Mobile menu content
+  const mobileMenu = (
+  <Box
+    sx={{ width: 250 }}
+    role="presentation"
+    onClick={handleMobileMenuToggle}
+    onKeyDown={handleMobileMenuToggle}
+  >
+    <List>
+      {!isAuthenticated && (
+        <>
+        
+          <ListItemButton onClick={() => login()}>
+            <ListItemText primary="Sign In" />
+          </ListItemButton>
+          <ListItemButton onClick={() => setSignupModalOpen(true)}>
+            <ListItemText primary="Sign Up" />
+          </ListItemButton>
+          <ListItemButton onClick={() => setSalonSignupModalOpen(true)}>
+            <ListItemText primary="Become a Partner" />
+          </ListItemButton>
+        </>
+      )}
+      
+     
+    </List>
+  </Box>
+);
 
   return (
     <>
@@ -111,7 +153,10 @@ const Navigation: React.FC = () => {
 
           {/* Search Bar - Only for customers/guests */}
           {isCustomerOrGuest && (
+              <Box sx={{ display: { xs: 'none', md: 'flex' }}}>
+
             <SearchBar/>
+            </Box>
           )}
 
           {/* Navigation Actions */}
@@ -129,20 +174,24 @@ const Navigation: React.FC = () => {
                     Become a Partner
                   </Button>
                 </Box>
-                <Button 
-                  color="inherit" 
-                  sx={{ fontWeight: 500 }}
-                  onClick={() => login()}
-                >
-                  Sign In
-                </Button>
-                <Button 
-                  variant="contained" 
-                  sx={{ fontWeight: 600 }}
-                  onClick={() => setSignupModalOpen(true)}
-                >
-                  Sign Up
-                </Button>
+                <Box sx={{ display: { xs: 'none', md: 'flex' }, gap: 3 }}>
+                    <Button 
+                      color="inherit" 
+                      sx={{ fontWeight: 500 }}
+                      onClick={() => login()}
+                    >
+                      Sign In
+                    </Button>
+                </Box>
+                <Box sx={{ display: { xs: 'none', md: 'flex' }, gap: 3 }}>
+                  <Button 
+                    variant="contained" 
+                    sx={{ fontWeight: 600 }}
+                    onClick={() => setSignupModalOpen(true)}
+                  >
+                    Sign Up
+                  </Button>
+                </Box>
               </>
             )}
 
@@ -258,15 +307,27 @@ const Navigation: React.FC = () => {
             )}
 
             {/* Mobile menu button */}
-            <IconButton 
-              color="inherit" 
+            {!isAuthenticated && (
+            <IconButton
+              color="inherit"
               sx={{ display: { xs: 'block', md: 'none' } }}
+              onClick={handleMobileMenuToggle}
             >
               <MenuIcon />
             </IconButton>
+            )}
           </Box>
         </Toolbar>
       </AppBar>
+
+      {/* Mobile Menu Drawer */}
+      <Drawer
+        anchor="right"
+        open={mobileMenuOpen}
+        onClose={handleMobileMenuToggle}
+      >
+        {mobileMenu}
+      </Drawer>
 
       {/* Auth Modals */}
      

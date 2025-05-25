@@ -1,7 +1,6 @@
 package com.kandarp.salon.shared.serviceoffering.dto;
 
 import java.math.BigDecimal;
-import java.time.Duration;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,7 +15,7 @@ public class ServiceOfferingRequestDto {
     private String name;
     private String description;
     private BigDecimal price;
-    private Duration duration;
+    private long duration;
     private Long categoryId;
     private boolean available;
 
