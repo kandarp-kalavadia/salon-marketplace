@@ -14,3 +14,13 @@
     **data** 
 
 => create **data** folder inside **tempo** folder
+
+
+=============================================================================
+
+for stripe cli webhook config for local 
+
+http://localhost:8080/api/v1/payments/webhook
+
+
+stripe listen --forward-to http://localhost:8080/api/v1/payments/webhook
