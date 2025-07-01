@@ -105,6 +105,10 @@ This command configures the Stripe CLI to listen for webhook events and forward 
 
 3. **Access the Application**  
    - The API gateway (Spring Cloud Gateway) typically runs on `http://localhost:8080`.
+   - Access the **Swagger API Documentation** at:  
+     ```
+     http://localhost:8080/swagger-ui/index.html
+     ```
    - Verify service discovery via the Eureka dashboard (port depends on configuration).
    - Monitor metrics and traces using Grafana, Prometheus, and Tempo.
 
@@ -114,4 +118,3 @@ This is a learning project, and contributions are welcome for educational purpos
 ## License
 This project is for learning purposes and does not include a specific license. Use it responsibly for educational exploration of microservice architecture.
 
-****
