@@ -1,13 +1,12 @@
-```markdown
 # Project Setup Instructions
 
 ## Directory Structure Setup
 
-1. **Clone the Repository**
+1. **Clone the Repository**  
+   Clone the repository to your local machine by replacing `<repository-url>` with the actual repository URL.  
    ```bash
    git clone <repository-url>
-   ```
-
+   
 2. **Create Databases Folder and Subfolders**
    Create a `databases` folder in the root directory and add the following subfolders:
    ```bash
@@ -43,9 +42,3 @@ stripe listen --forward-to http://localhost:8080/api/v1/payments/webhook
 This command sets up the Stripe CLI to listen for webhook events and forward them to the specified local endpoint.
 ```
 
-### Notes:
-- The Markdown is structured with clear headings and code blocks for better readability.
-- Commands are formatted using triple backticks (```) for proper syntax highlighting in Markdown.
-- The Stripe CLI section is separated to distinguish it from the directory setup instructions.
-- Replace `<repository-url>` with the actual repository URL when using the `git clone` command.
-- If you need further customization or additional sections, let me know!
