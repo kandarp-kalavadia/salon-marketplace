@@ -20,8 +20,11 @@ Salon Marketplace is a learning project designed to explore **microservice archi
 - **Payment**: Process payments securely via Stripe integration.
 - **Notifications**: Receive notifications for confirmed bookings.
 
-## Note
-This application is a proof-of-concept for learning microservice architecture with Spring Boot. It includes limited features and validations to emphasize architectural patterns and technologies.
+## Notes
+- This application is a proof-of-concept for learning microservice architecture with Spring Boot. It includes limited features and validations to emphasize architectural patterns and technologies.
+- **Environment Files**: In a real-world project, `.env` files containing sensitive configuration (e.g., API keys, database credentials) must **not** be committed to the repository for security reasons. However, in this learning project, the `.env` file is committed to simplify setup and configuration.
+- **Docker Frontend**: The Dockerfile for the frontend is configured for local development only. For production, a multi-stage build is required to serve frontend files using a web server (e.g., Nginx or Apache).
+- **Config Server**: A configuration server (e.g., Spring Cloud Config) is not used in this project to make it easier to identify which properties belong to each service during the learning phase.
 
 ## Technology Stack
 The project leverages the following technologies and tools to implement a robust microservice architecture:
@@ -49,6 +52,7 @@ The project leverages the following technologies and tools to implement a robust
 - Java (JDK 17 or later recommended)
 - Stripe CLI (for local webhook testing)
 - Maven (for building Spring Boot services)
+- Node.js (for running the frontend, if applicable)
 
 ### Directory Structure Setup
 1. **Clone the Repository**  
@@ -104,13 +108,18 @@ This command configures the Stripe CLI to listen for webhook events and forward 
    ```
 
 3. **Access the Application**  
-   - The API gateway (Spring Cloud Gateway) typically runs on `http://localhost:8080`.
-   - Access the **Swagger API Documentation** at:  
-     ```
-     http://localhost:8080/swagger-ui/index.html
-     ```
-   - Verify service discovery via the Eureka dashboard (port depends on configuration).
-   - Monitor metrics and traces using Grafana, Prometheus, and Tempo.
+   Access the following services at their respective URLs:  
+   - **Frontend**: `http://localhost:3000/`  
+   - **API Gateway (Spring Cloud Gateway)**: `http://localhost:8080`  
+   - **Swagger API Documentation**: `http://localhost:8080/swagger-ui/index.html`  
+   - **Keycloak**: `http://localhost:8000/`  
+   - **Eureka Server 1**: `http://localhost:8761/`  
+   - **Eureka Server 2**: `http://localhost:8762/`  
+   - **RabbitMQ**: `http://localhost:15672/#/`  
+   - **Prometheus**: `http://localhost:9090/query`  
+   - **Grafana**: `http://localhost:3001/`  
+
+   Verify service discovery via the Eureka dashboard and monitor metrics and traces using Grafana, Prometheus, and Tempo.
 
 ## Contributing
 This is a learning project, and contributions are welcome for educational purposes. Feel free to fork the repository, experiment with additional microservices features, or improve the architecture.
