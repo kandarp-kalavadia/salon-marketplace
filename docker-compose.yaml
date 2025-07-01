@@ -413,14 +413,17 @@ services:
       interval: 30s
       timeout: 10s
       retries: 3
+   # Frontend Service for prod we need to build the frontend first and then run react app in web server
+   # For development below configuration is fine but for production we need multiple build steps in Dockerfile
   frontend:
     build:
       context: ./salon-frontend
       dockerfile: Dockerfile
+      #dockerfile: Dockerfile.prod for production
     container_name: salon-frontend
     volumes:
-      - ./salon-frontend:/app
-      - /app/node_modules
+      - ./salon-frontend:/app # for development
+      - /app/node_modules # for development
     ports:
       - "3000:3000"
     depends_on:

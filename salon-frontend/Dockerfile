@@ -1,3 +1,5 @@
+# Frontend Service for prod we need to build the frontend first and then run react app in web server
+# For development below configuration is fine but for production we need multiple build steps in Dockerfile
 FROM node:23-alpine3.20
 
 WORKDIR /app

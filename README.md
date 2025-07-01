@@ -79,6 +79,43 @@ The project leverages the following technologies and tools to implement a robust
    mkdir -p tempo/data
    ```
 
+
+### Keycloak Configuration
+Keycloak is used for authentication and authorization, requiring two realms to be configured:
+
+1. **react-app Realm** (Frontend Support)  
+   - **Purpose**: Handles authentication for the frontend application.  
+   - **OAuth Flow**: Authorization Code with Proof Key for Code Exchange (PKCE).  
+   - **Configuration Steps**:  
+     - Access Keycloak at `http://localhost:8000/`.  
+     - Create a new realm named `react-app`.  
+     - Configure a client for the frontend with the following settings:  
+       - **Client ID**: Set a unique client ID (e.g., `react-app-client`).  
+       - **Client Protocol**: OpenID Connect.  
+       - **Access Type**: Public (for PKCE flow).  
+       - **Standard Flow Enabled**: Enable Authorization Code flow.  
+       - **Valid Redirect URIs**: Add `http://localhost:3000/*` (or other frontend URLs as needed).  
+       - **Web Origins**: Add `http://localhost:3000` to allow CORS.  
+     - Ensure PKCE is enabled for secure token exchange.  
+
+2. **user-service Realm** (Backend User-Service Microservice)  
+   - **Purpose**: Handles authentication for the user-service microservice for user management.  
+   - **OAuth Flow**: Client Credentials Flow (for machine-to-machine communication).  
+   - **Configuration Steps**:  
+     - Access Keycloak at `http://localhost:8000/`.  
+     - Create a new realm named `user-service`.  
+     - Configure a client for the user-service with the following settings:  
+       - **Client ID**: Set a unique client ID (e.g., `user-service-client`).  
+       - **Client Protocol**: OpenID Connect.  
+       - **Access Type**: Confidential.  
+       - **Service Accounts Enabled**: Enable to allow client credentials flow.  
+       - **Client Authenticator**: Client ID and Secret.  
+       - Generate and securely store the client secret.  
+     - Assign necessary roles to the service account for user management operations.  
+
+   **Note**: Update the respective microservice and frontend configurations (e.g., `.env` or application properties) with the Keycloak realm, client ID, and client secret (for `user-service` realm) to enable authentication.
+
+
 ### Stripe CLI Webhook Configuration (Local)
 To configure Stripe CLI for local webhook testing, use the following endpoint:
 
